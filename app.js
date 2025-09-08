@@ -12,7 +12,24 @@ const port = process.env.PORT || 3000;
 const verifyToken = process.env.VERIFY_TOKEN;
 
 // Route for GET requests
-app.get("/", (req, res) => {
+
+app.get("/", (req, res) => res.type("html").send(html));
+
+const html = `
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Hello from Render Express Meta Test!</title>
+  </head>
+  <body>
+    <section>
+      Hello from Render Express Meta Test!
+    </section>
+  </body>
+</html>
+`;
+
+app.get("/webhook", (req, res) => {
   const { "hub.mode": mode, "hub.challenge": challenge, "hub.verify_token": token } = req.query;
 
   if (mode === "subscribe" && token === verifyToken) {
@@ -24,7 +41,7 @@ app.get("/", (req, res) => {
 });
 
 // Route for POST requests
-app.post("/", (req, res) => {
+app.post("/webhook", (req, res) => {
   const timestamp = new Date().toISOString().replace("T", " ").slice(0, 19);
   console.log(`\n\nWebhook received ${timestamp}\n`);
   console.log(JSON.stringify(req.body, null, 2));
